@@ -1,5 +1,7 @@
 package com.example.orderapp.viewmodel
 
+import androidx.core.content.edit
+
 import android.app.Application
 import android.content.Context
 import android.net.Uri
@@ -45,10 +47,7 @@ class SettingViewModel(application: Application) : AndroidViewModel(application)
             println("setTheme called. Old theme: ${_theme.value}, New theme: $theme")
             _theme.value = theme
             withContext(Dispatchers.IO) { // Add withContext(Dispatchers.IO) for sharedPreferences operations
-                with(sharedPreferences.edit()) {
-                    putString("theme", theme.name)
-                    commit()
-                }
+                sharedPreferences.edit { putString("theme", theme.name) }
             }
         }
     }
