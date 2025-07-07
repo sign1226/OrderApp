@@ -1,8 +1,9 @@
 [versions]
-agp = "8.10.1"
+agp = "8.6.0"
+composeCompilerVersion = "1.5.8"
 appcompat = "1.7.1"
 gson = "2.11.0"
-kotlin = "2.0.0"
+kotlin = "1.9.22"
 kotlinxSerialization = "1.6.3"
 kotlinxCoroutinesCore = "1.8.0"
 coreKtx = "1.16.0"
@@ -11,14 +12,16 @@ junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.9.1"
 activityCompose = "1.10.1"
-composeBom = "2024.06.00"
+composeBom = "2024.02.02"
 materialIconsExtended = "1.7.8"
 navigationCompose = "2.9.1"
 reorderableJvm = "0.9.6"
 room = "2.6.1"
-ksp = "2.0.0-1.0.21"
+ksp = "1.9.22-1.0.17"
 
 [libraries]
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
+kotlin-stdlib-jdk8 = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlin" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
@@ -40,6 +43,7 @@ androidx-room-compiler = { group = "androidx.room", name = "room-compiler", vers
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 androidx-compose-material-iconsExtended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "materialIconsExtended" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 reorderable-jvm = { module = "org.burnoutcrew.composereorderable:reorderable-jvm", version.ref = "reorderableJvm" }
 
@@ -47,5 +51,5 @@ reorderable-jvm = { module = "org.burnoutcrew.composereorderable:reorderable-jvm
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "composeCompilerVersion" }
 

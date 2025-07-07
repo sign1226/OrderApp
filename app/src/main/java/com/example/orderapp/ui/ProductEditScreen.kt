@@ -127,7 +127,8 @@ fun ProductEditScreen(viewModel: ProductViewModel, categoryViewModel: CategoryVi
                         .reorderable(state),
                     contentPadding = PaddingValues(bottom = 72.dp)
                 ) {
-                    items(products, { it.id }) { itemProduct ->
+                    items(products, { it.id }) {
+                        itemProduct ->
                         Card(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -195,7 +196,7 @@ fun ProductEditScreen(viewModel: ProductViewModel, categoryViewModel: CategoryVi
             onDismiss = { isEditing = false },
             onSave = { savedProduct ->
                 if (selectedProduct == null) {
-                    val newOrder = products.maxOfOrNull { product -> product.order }?.plus(1) ?: 0
+                    val newOrder = products.maxOfOrNull { it.order }?.plus(1) ?: 0
                     viewModel.addProduct(savedProduct.copy(order = newOrder))
                 } else {
                     viewModel.updateProduct(savedProduct)
@@ -317,7 +318,7 @@ fun ProductEditDialog(product: Product?, onDismiss: () -> Unit, onSave: (Product
                 Row(modifier = Modifier.fillMaxWidth()) {
                     OutlinedTextField(
                         value = amount,
-                                                onValueChange = { newAmount -> amount = newAmount.filter { char -> char.isDigit() }; amountError = null },
+                                                onValueChange = { newAmount -> amount = newAmount.filter { it.isDigit() }; amountError = null },
                         label = { Text("量") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         singleLine = true,
@@ -338,7 +339,7 @@ fun ProductEditDialog(product: Product?, onDismiss: () -> Unit, onSave: (Product
                 }
                 OutlinedTextField(
                     value = price,
-                    onValueChange = { newPrice -> price = newPrice.filter { char -> char.isDigit() }; priceError = null },
+                    onValueChange = { newPrice -> price = newPrice.filter { it.isDigit() }; priceError = null },
                     label = { Text("価格") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     singleLine = true,

@@ -1,18 +1,18 @@
 package com.example.orderapp.model
 
-import androidx.core.content.edit
-
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import android.content.SharedPreferences
+import kotlin.jvm.Volatile
+import kotlin.text.trimIndent
 
 @Database(entities = [Product::class, OrderHistory::class, OrderHistoryLine::class, Category::class], version = 7, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
@@ -62,7 +62,7 @@ abstract class AppDatabase : RoomDatabase() {
                                         productDao.insertProduct(product)
                                     }
 
-                                    prefs.edit { putBoolean(KEY_INITIAL_DATA_INSERTED, true) }
+                                    prefs.edit().putBoolean(KEY_INITIAL_DATA_INSERTED, true).apply()
                                 }
                             }
                         }
