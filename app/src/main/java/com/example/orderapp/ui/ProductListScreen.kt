@@ -4,66 +4,62 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.drawscope.clipPath
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.boundsInWindow
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
-
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
-import com.example.orderapp.model.Category
 import com.example.orderapp.model.Product
 import com.example.orderapp.viewmodel.ProductViewModel
-import android.content.Context
-import android.content.SharedPreferences
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.IconButton
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.material.icons.filled.Clear
 
 
-val NO_CATEGORY_ID = 0L
+const val NO_CATEGORY_ID = 0L
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -183,13 +179,13 @@ fun ProductListScreen(
                     item {
                         CategoryHeader(
                             categoryName = "カテゴリなし",
-                            isExpanded = expandedCategories[NO_CATEGORY_ID] ?: false,
+                            isExpanded = expandedCategories[NO_CATEGORY_ID] == true,
                             onToggleExpand = {
-                                expandedCategories[NO_CATEGORY_ID] = !(expandedCategories[NO_CATEGORY_ID] ?: true)
+                                expandedCategories[NO_CATEGORY_ID] = expandedCategories[NO_CATEGORY_ID] == false
                             }
                         )
                     }
-                    if (expandedCategories[NO_CATEGORY_ID] ?: false) {
+                    if (expandedCategories[NO_CATEGORY_ID] == true) {
                         items(noCategoryProducts) { product ->
                             ProductListItem(
                                 product = product,
@@ -209,13 +205,13 @@ fun ProductListScreen(
                         item {
                             CategoryHeader(
                                 categoryName = category.name,
-                                isExpanded = expandedCategories[category.id] ?: false,
+                                isExpanded = expandedCategories[category.id] == true,
                                 onToggleExpand = {
-                                    expandedCategories[category.id] = !(expandedCategories[category.id] ?: true)
+                                    expandedCategories[category.id] = expandedCategories[category.id] == false
                                 }
                             )
                         }
-                        if (expandedCategories[category.id] ?: false) {
+                        if (expandedCategories[category.id] == true) {
                             items(categoryProducts) { product ->
                                 ProductListItem(
                                     product = product,

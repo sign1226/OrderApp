@@ -1,56 +1,48 @@
 package com.example.orderapp.ui
 
 import android.app.Activity
+import android.app.Application
 import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.example.orderapp.AppTheme
+import com.example.orderapp.model.ExportFormat
 import com.example.orderapp.viewmodel.SettingViewModel
 import com.example.orderapp.viewmodel.SettingViewModelFactory
-import android.app.Application
 import kotlinx.coroutines.launch
-import androidx.compose.runtime.rememberCoroutineScope
-import com.example.orderapp.model.getChangelog
-import androidx.compose.runtime.collectAsState
-import androidx.compose.material3.AlertDialog
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import com.example.orderapp.model.ExportFormat // Import ExportFormat
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.key
-import com.example.orderapp.ui.ChangelogView
-
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.TextFieldDefaults
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -124,7 +116,7 @@ fun SettingScreen(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
-                AppTheme.values().forEach { themeOption ->
+                AppTheme.entries.forEach { themeOption ->
                     DropdownMenuItem(
                         text = {
                             Text(
@@ -150,7 +142,7 @@ fun SettingScreen(
         // Export Format Selection
         Text("エクスポート形式", style = MaterialTheme.typography.titleMedium)
         Row {
-            ExportFormat.values().forEach { format ->
+            ExportFormat.entries.forEach { format ->
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     RadioButton(
                         selected = (format == selectedExportFormat),
@@ -176,7 +168,7 @@ fun SettingScreen(
         // Import Format Selection
         Text("インポート形式", style = MaterialTheme.typography.titleMedium)
         Row {
-            ExportFormat.values().forEach { format ->
+            ExportFormat.entries.forEach { format ->
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     RadioButton(
                         selected = (format == selectedImportFormat),

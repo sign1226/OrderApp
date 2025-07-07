@@ -1,41 +1,47 @@
 package com.example.orderapp.ui
 
-import androidx.compose.foundation.layout.*
+import android.content.Context
+import android.content.Intent
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.example.orderapp.model.Order
-import androidx.compose.material3.Card
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.material3.CardDefaults
-
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
-import com.example.orderapp.viewmodel.ProductViewModel
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.Alignment
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.TextButton
-import com.example.orderapp.model.Product
-import android.content.Intent
-import android.content.Context
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
+import com.example.orderapp.model.Order
+import com.example.orderapp.model.Product
+import com.example.orderapp.viewmodel.ProductViewModel
 
 @Composable
 fun OrderScreen(order: Order, onContinueShopping: () -> Unit, onPlaceOrder: () -> Unit, viewModel: ProductViewModel, onOrderChange: (Order) -> Unit) {
@@ -87,11 +93,12 @@ fun OrderScreen(order: Order, onContinueShopping: () -> Unit, onPlaceOrder: () -
         AlertDialog(
             onDismissRequest = { showExportDialog = false },
             title = { Text("注文内容のエクスポート") },
-            text = { Text(formatOrderForEmail(order, taxRate, totalPrice, tax, totalPriceWithTax)) },
+            text = { Text(formatOrderForEmail(order)) },
             confirmButton = {
                 TextButton(
                     onClick = {
-                        shareOrderViaEmail(context, formatOrderForEmail(order, taxRate, totalPrice, tax, totalPriceWithTax))
+                        shareOrderViaEmail(context, formatOrderForEmail(order
+                        ))
                         showExportDialog = false
                         onContinueShopping() // 共有後、商品リストに戻る
                         onOrderChange(Order()) // 注文をクリア
@@ -197,7 +204,7 @@ fun OrderScreen(order: Order, onContinueShopping: () -> Unit, onPlaceOrder: () -
     }
 }
 
-fun formatOrderForEmail(order: Order, taxRate: Int, totalPrice: Int, tax: Int, totalPriceWithTax: Int): String {
+fun formatOrderForEmail(order: Order): String {
     val stringBuilder = StringBuilder()
     stringBuilder.append("注文内容\n")
     stringBuilder.append("------------------------------------\n")
