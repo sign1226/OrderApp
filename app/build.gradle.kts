@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
+    
     
     alias(libs.plugins.ksp)
     
@@ -65,7 +67,7 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.compose.material.iconsExtended)
     implementation(libs.kotlinx.coroutines.core)
-    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -74,6 +76,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling.preview)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.kotlinx.serialization.json)
-    implementation("org.burnoutcrew.composereorderable:reorderable-jvm:0.9.6")
-    implementation("com.google.code.gson:gson:2.10.1")
+    implementation(libs.reorderable.jvm)
+    implementation(libs.gson)
 }

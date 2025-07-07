@@ -40,6 +40,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -213,7 +214,7 @@ fun ProductEditDialog(product: Product?, onDismiss: () -> Unit, onSave: (Product
     var price by remember { mutableStateOf(product?.price?.toString() ?: "") }
     var unit by remember { mutableStateOf(product?.unit ?: "") }
     var amount by remember { mutableStateOf(product?.amount?.toString() ?: "1") } // amountのstateを追加
-    var selectedCategoryId by remember { mutableStateOf(product?.categoryId ?: 0L) }
+    var selectedCategoryId by remember { mutableLongStateOf(product?.categoryId ?: 0L) }
     var nameError by remember { mutableStateOf<String?>(null) }
     var priceError by remember { mutableStateOf<String?>(null) }
     var unitError by remember { mutableStateOf<String?>(null) }

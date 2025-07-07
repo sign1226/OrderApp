@@ -1,5 +1,7 @@
 package com.example.orderapp.model
 
+import androidx.core.content.edit
+
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
@@ -26,13 +28,14 @@ abstract class AppDatabase : RoomDatabase() {
 
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
+                @Suppress("DEPRECATION")
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
                     "order_app_database"
                 )
                     .fallbackToDestructiveMigrationFrom(1, 2, 3, 4, 5, 6)
-                    .addCallback(object : RoomDatabase.Callback() {
+                    .addCallback(object : Callback() {
                         override fun onCreate(db: SupportSQLiteDatabase) {
                             super.onCreate(db)
                             val prefs: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -59,7 +62,7 @@ abstract class AppDatabase : RoomDatabase() {
                                         productDao.insertProduct(product)
                                     }
 
-                                    prefs.edit().putBoolean(KEY_INITIAL_DATA_INSERTED, true).apply()
+                                    prefs.edit { putBoolean(KEY_INITIAL_DATA_INSERTED, true) }
                                 }
                             }
                         }
