@@ -1,9 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.compose.compiler)
+    
     alias(libs.plugins.ksp)
-    alias(libs.plugins.kotlin.serialization)
+    
 }
 
 android {
@@ -36,16 +36,16 @@ android {
     kotlin {
         compilerOptions {
             jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
+            freeCompilerArgs.add("-opt-in=androidx.compose.material3.ExperimentalMaterial3Api")
         }
     }
     buildFeatures {
         compose = true
     }
-    testOptions {
-        unitTests.all {
-            it.enabled = false
-        }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.11"
     }
+    
     
 }
 
@@ -73,7 +73,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling.preview)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+    implementation(libs.kotlinx.serialization.json)
     implementation("org.burnoutcrew.composereorderable:reorderable-jvm:0.9.6")
     implementation("com.google.code.gson:gson:2.10.1")
 }

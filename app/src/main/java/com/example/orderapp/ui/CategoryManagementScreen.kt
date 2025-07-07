@@ -114,7 +114,7 @@ fun CategoryManagementScreen(categoryViewModel: CategoryViewModel) {
                     modifier = Modifier
                         .reorderable(state)
                 ) {
-                    items(categories, { it.id }) { category ->
+                    items(categories, { it.id }) { itemCategory ->
                         Card(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -130,14 +130,14 @@ fun CategoryManagementScreen(categoryViewModel: CategoryViewModel) {
                                     verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
                                 ) {
                                     Text(
-                                        text = category.name,
+                                        text = itemCategory.name,
                                         style = MaterialTheme.typography.titleMedium,
                                         color = MaterialTheme.colorScheme.onSurface
                                     )
                                     Row {
                                         IconButton(
                                             onClick = {
-                                                selectedCategory = category
+                                                selectedCategory = itemCategory
                                                 showAddEditDialog = true
                                             },
                                             modifier = Modifier
@@ -146,7 +146,7 @@ fun CategoryManagementScreen(categoryViewModel: CategoryViewModel) {
                                         }
                                         IconButton(
                                             onClick = {
-                                                categoryToDelete = category
+                                                categoryToDelete = itemCategory
                                                 showDeleteDialog = true
                                             },
                                             modifier = Modifier
@@ -168,12 +168,12 @@ fun CategoryManagementScreen(categoryViewModel: CategoryViewModel) {
         CategoryAddEditDialog(
             category = selectedCategory,
             onDismiss = { showAddEditDialog = false },
-            onSave = { category ->
-                if (category.id == 0L) {
+            onSave = { savedCategory ->
+                if (savedCategory.id == 0L) {
                     val newOrder = categories.maxOfOrNull { category -> category.order }?.plus(1) ?: 0
-                    categoryViewModel.insertCategory(category.copy(order = newOrder))
+                    categoryViewModel.insertCategory(savedCategory.copy(order = newOrder))
                 } else {
-                    categoryViewModel.updateCategory(category)
+                    categoryViewModel.updateCategory(savedCategory)
                 }
                 showAddEditDialog = false
             }

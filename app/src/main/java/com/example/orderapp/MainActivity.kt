@@ -68,7 +68,6 @@ class MainActivity : ComponentActivity() {
                 OrderAppTheme(appTheme = currentThemeState.value) {
                 val navController = rememberNavController()
                 val screens = listOf(Screen.Order, Screen.Edit, Screen.CategoryManagement, Screen.History, Screen.Settings)
-                val application = LocalContext.current.applicationContext as Application
                 val productViewModel: ProductViewModel = viewModel(factory = ProductViewModelFactory(application))
                 val orderHistoryViewModel: OrderHistoryViewModel = viewModel(factory = OrderHistoryViewModelFactory(application))
                 val categoryViewModel: CategoryViewModel = viewModel(factory = CategoryViewModelFactory(application))

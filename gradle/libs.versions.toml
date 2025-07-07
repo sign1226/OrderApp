@@ -1,7 +1,7 @@
 [versions]
 agp = "8.10.1"
-kotlin = "2.2.0"
-kotlinxSerialization = "1.7.3"
+kotlin = "1.9.23"
+kotlinxSerialization = "1.6.3"
 kotlinxCoroutinesCore = "1.8.0"
 coreKtx = "1.16.0"
 junit = "4.13.2"
@@ -9,11 +9,11 @@ junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.9.1"
 activityCompose = "1.10.1"
-composeBom = "2025.06.01"
+composeBom = "2024.06.00"
 materialIconsExtended = "1.7.8"
 navigationCompose = "2.9.1"
-room = "2.7.2"
-ksp = "2.2.0-2.0.2"
+room = "2.6.1"
+ksp = "1.9.23-1.0.19"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }

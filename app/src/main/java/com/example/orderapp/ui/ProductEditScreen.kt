@@ -126,7 +126,7 @@ fun ProductEditScreen(viewModel: ProductViewModel, categoryViewModel: CategoryVi
                         .reorderable(state),
                     contentPadding = PaddingValues(bottom = 72.dp)
                 ) {
-                    items(products, { it.id }) { product ->
+                    items(products, { it.id }) { itemProduct ->
                         Card(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -143,19 +143,19 @@ fun ProductEditScreen(viewModel: ProductViewModel, categoryViewModel: CategoryVi
                                 ) {
                                     Column(modifier = Modifier.weight(1f)) {
                                         Text(
-                                            text = product.name,
+                                            text = itemProduct.name,
                                             style = MaterialTheme.typography.titleLarge,
                                             fontWeight = FontWeight.Bold,
                                             color = MaterialTheme.colorScheme.onSurface
                                         )
                                         Spacer(modifier = Modifier.height(4.dp))
                                         Text(
-                                            text = "¥${product.price} / ${product.amount}${product.unit}",
+                                            text = "¥${itemProduct.price} / ${itemProduct.amount}${itemProduct.unit}",
                                             style = MaterialTheme.typography.bodyLarge,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                         // カテゴリ名を表示
-                                        val categoryName = categoryMap[product.categoryId]?.name ?: "カテゴリなし"
+                                        val categoryName = categoryMap[itemProduct.categoryId]?.name ?: "カテゴリなし"
                                         Text(
                                             text = "カテゴリ: $categoryName",
                                             style = MaterialTheme.typography.bodyMedium,
@@ -165,7 +165,7 @@ fun ProductEditScreen(viewModel: ProductViewModel, categoryViewModel: CategoryVi
                                     Row {
                                         IconButton(
                                             onClick = {
-                                                selectedProduct = product
+                                                selectedProduct = itemProduct
                                                 isEditing = true
                                             }
                                         ) {
@@ -173,7 +173,7 @@ fun ProductEditScreen(viewModel: ProductViewModel, categoryViewModel: CategoryVi
                                         }
                                         IconButton(
                                             onClick = {
-                                                productToDelete = product
+                                                productToDelete = itemProduct
                                                 showDeleteDialog = true
                                             }
                                         ) {
@@ -192,12 +192,12 @@ fun ProductEditScreen(viewModel: ProductViewModel, categoryViewModel: CategoryVi
         ProductEditDialog(
             product = selectedProduct,
             onDismiss = { isEditing = false },
-            onSave = { product ->
+            onSave = { savedProduct ->
                 if (selectedProduct == null) {
                     val newOrder = products.maxOfOrNull { product -> product.order }?.plus(1) ?: 0
-                    viewModel.addProduct(product.copy(order = newOrder))
+                    viewModel.addProduct(savedProduct.copy(order = newOrder))
                 } else {
-                    viewModel.updateProduct(product)
+                    viewModel.updateProduct(savedProduct)
                 }
                 isEditing = false
             },
