@@ -1,38 +1,56 @@
 package com.example.orderapp.ui
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.example.orderapp.model.Product
-import com.example.orderapp.viewmodel.ProductViewModel
-import com.example.orderapp.viewmodel.CategoryViewModel
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import org.burnoutcrew.reorderable.ReorderableItem
-import org.burnoutcrew.reorderable.detectReorderAfterLongPress
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
+import com.example.orderapp.model.Product
+import com.example.orderapp.viewmodel.CategoryViewModel
+import com.example.orderapp.viewmodel.ProductViewModel
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import kotlin.collections.emptyList
-import kotlin.collections.toMutableList
-import kotlin.collections.maxOfOrNull
-import kotlin.text.isNotBlank
-import kotlin.text.isDigit
-import kotlin.text.toIntOrNull
-
-import androidx.compose.material3.ExposedDropdownMenuBox
-import android.content.SharedPreferences
-import androidx.compose.ui.platform.LocalContext
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,9 +64,6 @@ fun ProductEditScreen(viewModel: ProductViewModel, categoryViewModel: CategoryVi
 
     val allCategories by categoryViewModel.allCategories.collectAsState(initial = emptyList())
     val categoryMap = remember(allCategories) { allCategories.associateBy { it.id } }
-
-    val context = LocalContext.current
-    val prefs: SharedPreferences = context.getSharedPreferences("OrderAppPrefs", android.content.Context.MODE_PRIVATE)
 
     val state = rememberReorderableLazyListState(onMove = { from, to ->
         val reorderedProducts = products.toMutableList().apply {
