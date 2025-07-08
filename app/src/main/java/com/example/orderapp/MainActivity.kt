@@ -20,7 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -64,15 +63,14 @@ class MainActivity : ComponentActivity() {
             val settingViewModel: SettingViewModel = viewModel(factory = SettingViewModelFactory(application))
             val currentThemeState = settingViewModel.theme.collectAsState()
 
-            key(currentThemeState.value) {
-                OrderAppTheme(appTheme = currentThemeState.value) {
+            OrderAppTheme(appTheme = currentThemeState.value) {
                 val navController = rememberNavController()
                 val screens = listOf(Screen.Order, Screen.Edit, Screen.CategoryManagement, Screen.History, Screen.Settings)
                 val productViewModel: ProductViewModel = viewModel(factory = ProductViewModelFactory(application))
                 val orderHistoryViewModel: OrderHistoryViewModel = viewModel(factory = OrderHistoryViewModelFactory(application))
                 val categoryViewModel: CategoryViewModel = viewModel(factory = CategoryViewModelFactory(application))
 
-                    Scaffold(
+                Scaffold(
                     bottomBar = {
                         NavigationBar {
                             val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -93,7 +91,7 @@ class MainActivity : ComponentActivity() {
                                     },
                                     label = { Text(screen.title) },
                                     selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                                    onClick = { 
+                                    onClick = {
                                         navController.navigate(screen.route) {
                                             popUpTo(navController.graph.startDestinationId) {
                                                 saveState = true
@@ -112,11 +110,10 @@ class MainActivity : ComponentActivity() {
                         composable(Screen.Edit.route) { ProductEditScreen(productViewModel, categoryViewModel) }
                         composable(Screen.History.route) { OrderHistoryScreen(orderHistoryViewModel) }
                         composable(Screen.CategoryManagement.route) { CategoryManagementScreen(categoryViewModel) }
-                        composable(Screen.Settings.route) { SettingScreen() }
+                        composable(Screen.Settings.route) { SettingScreen(viewModel = settingViewModel) }
                     }
                 }
             }
-        }
         }
     }
 }

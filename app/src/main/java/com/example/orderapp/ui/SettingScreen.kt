@@ -88,8 +88,7 @@ fun SettingScreen(
         .verticalScroll(rememberScrollState())) { // スクロール可能にする
         Text("テーマ設定", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(16.dp))
-        Text("※テーマの変更はアプリの再起動後に反映されます。", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Spacer(modifier = Modifier.height(8.dp))
+        
 
         var expanded by remember { mutableStateOf(false) }
         ExposedDropdownMenuBox(
