@@ -44,6 +44,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -80,6 +81,12 @@ fun ProductListScreen(
     val selectedCategoryId by productViewModel.selectedCategoryId.collectAsState()
 
     val expandedCategories = remember { mutableStateMapOf<Long, Boolean>() }
+
+    val groupedProducts by remember(products) {
+        derivedStateOf {
+            products.groupBy { it.categoryId }
+        }
+    }
 
     LaunchedEffect(categories) {
         expandedCategories.clear()
@@ -179,7 +186,7 @@ fun ProductListScreen(
 
             LazyColumn(modifier = Modifier.weight(1f)) {
                 // 「カテゴリなし」の商品を表示
-                val noCategoryProducts = products.filter { it.categoryId == NO_CATEGORY_ID }
+                val noCategoryProducts = groupedProducts[NO_CATEGORY_ID] ?: emptyList()
                 if (noCategoryProducts.isNotEmpty()) {
                     item {
                         CategoryHeader(
@@ -191,7 +198,7 @@ fun ProductListScreen(
                         )
                     }
                     if (expandedCategories[NO_CATEGORY_ID] == true) {
-                        items(noCategoryProducts) { product ->
+                        items(noCategoryProducts, key = { it.id }) { product ->
                             ProductListItem(
                                 product = product,
                                 initialQuantity = quantities[product.id] ?: "",
@@ -205,7 +212,7 @@ fun ProductListScreen(
 
                 // 各カテゴリの商品を表示
                 categories.forEach { category ->
-                    val categoryProducts = products.filter { it.categoryId == category.id }
+                    val categoryProducts = groupedProducts[category.id] ?: emptyList()
                     if (categoryProducts.isNotEmpty()) {
                         item {
                             CategoryHeader(
@@ -217,7 +224,7 @@ fun ProductListScreen(
                             )
                         }
                         if (expandedCategories[category.id] == true) {
-                            items(categoryProducts) { product ->
+                            items(categoryProducts, key = { it.id }) { product ->
                                 ProductListItem(
                                     product = product,
                                     initialQuantity = quantities[product.id] ?: "",
@@ -347,4 +354,3 @@ fun ProductListItem(
         }
     }
 }
-
