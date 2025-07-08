@@ -39,9 +39,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.example.orderapp.model.Order
 import com.example.orderapp.model.Product
 import com.example.orderapp.viewmodel.ProductViewModel
+import androidx.compose.foundation.Image
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.layout.size
 
 @Composable
 fun OrderScreen(order: Order, onContinueShopping: () -> Unit, onPlaceOrder: () -> Unit, viewModel: ProductViewModel, onOrderChange: (Order) -> Unit) {
@@ -138,6 +143,17 @@ fun OrderScreen(order: Order, onContinueShopping: () -> Unit, onPlaceOrder: () -
                             .padding(8.dp), // Reduced padding
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        orderLine.product.imageUri?.let {
+                            Image(
+                                painter = rememberAsyncImagePainter(it),
+                                contentDescription = orderLine.product.name,
+                                modifier = Modifier
+                                    .size(64.dp)
+                                    .clip(MaterialTheme.shapes.small),
+                                contentScale = ContentScale.Crop
+                            )
+                            Spacer(modifier = Modifier.width(16.dp))
+                        }
                         Column(modifier = Modifier.weight(1f)) {
                             Text(text = orderLine.product.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                             Text(text = "単価: ¥${orderLine.product.price} / ${orderLine.product.amount}${orderLine.product.unit}", style = MaterialTheme.typography.bodySmall)

@@ -29,4 +29,8 @@ class OrderHistoryRepository(context: Context) {
     suspend fun deleteOrderHistory(id: Long) {
         orderHistoryDao.deleteOrderHistoryById(id)
     }
+
+    fun getOrderHistoryById(id: Long): Flow<OrderHistoryWithLines> {
+        return orderHistoryDao.getOrderHistoryById(id)
+    }
 }

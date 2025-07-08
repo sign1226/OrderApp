@@ -1,5 +1,13 @@
 package com.example.orderapp.ui
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,14 +47,18 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.example.orderapp.model.Product
 import com.example.orderapp.viewmodel.CategoryViewModel
 import com.example.orderapp.viewmodel.ProductViewModel
@@ -141,7 +153,7 @@ fun ProductEditScreen(viewModel: ProductViewModel, categoryViewModel: CategoryVi
                                         .fillMaxWidth()
                                         .padding(16.dp),
                                     horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Column(modifier = Modifier.weight(1f)) {
                                         Text(
@@ -203,19 +215,21 @@ fun ProductEditScreen(viewModel: ProductViewModel, categoryViewModel: CategoryVi
                 }
                 isEditing = false
             },
-            categoryViewModel = categoryViewModel
+            categoryViewModel = categoryViewModel,
+            context = LocalContext.current
         )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductEditDialog(product: Product?, onDismiss: () -> Unit, onSave: (Product) -> Unit, categoryViewModel: CategoryViewModel) {
+fun ProductEditDialog(product: Product?, onDismiss: () -> Unit, onSave: (Product) -> Unit, categoryViewModel: CategoryViewModel, context: Context) {
     var name by remember { mutableStateOf(product?.name ?: "") }
     var price by remember { mutableStateOf(product?.price?.toString() ?: "") }
     var unit by remember { mutableStateOf(product?.unit ?: "") }
     var amount by remember { mutableStateOf(product?.amount?.toString() ?: "1") } // amountのstateを追加
     var selectedCategoryId by remember { mutableLongStateOf(product?.categoryId ?: 0L) }
+    var imageUri by remember { mutableStateOf(product?.imageUri) }
     var nameError by remember { mutableStateOf<String?>(null) }
     var priceError by remember { mutableStateOf<String?>(null) }
     var unitError by remember { mutableStateOf<String?>(null) }
@@ -223,6 +237,16 @@ fun ProductEditDialog(product: Product?, onDismiss: () -> Unit, onSave: (Product
 
     val categories by categoryViewModel.allCategories.collectAsState(initial = emptyList())
     var expanded by remember { mutableStateOf(false) }
+
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            context.contentResolver.takePersistableUriPermission(it, flag)
+            imageUri = it.toString()
+        }
+    }
 
     fun validate(): Boolean {
         var isValid = true
@@ -266,6 +290,34 @@ fun ProductEditDialog(product: Product?, onDismiss: () -> Unit, onSave: (Product
             Column(modifier = Modifier
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp)) {
+                // Image preview and selection
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(150.dp)
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .clickable { imagePickerLauncher.launch("image/*") },
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (imageUri != null) {
+                        Image(
+                            painter = rememberAsyncImagePainter(imageUri),
+                            contentDescription = "商品画像",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                        // 画像削除ボタン
+                        IconButton(
+                            onClick = { imageUri = null },
+                            modifier = Modifier.align(Alignment.TopEnd)
+                        ) {
+                            Icon(Icons.Default.Delete, contentDescription = "画像を削除")
+                        }
+                    } else {
+                        Text("画像を選択", style = MaterialTheme.typography.bodyLarge)
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
                 // カテゴリ選択ドロップダウン
                 ExposedDropdownMenuBox(
                     expanded = expanded,
@@ -343,7 +395,7 @@ fun ProductEditDialog(product: Product?, onDismiss: () -> Unit, onSave: (Product
                     label = { Text("価格") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     singleLine = true,
-                    isError = priceError != null,
+isError = priceError != null,
                     modifier = Modifier.fillMaxWidth()
                 )
                 priceError?.let { errorText -> Text(errorText, color = MaterialTheme.colorScheme.error) }
@@ -357,14 +409,16 @@ fun ProductEditDialog(product: Product?, onDismiss: () -> Unit, onSave: (Product
                         price = price.toInt(),
                         unit = unit,
                         amount = amount.toInt(),
-                        categoryId = selectedCategoryId
+                        categoryId = selectedCategoryId,
+                        imageUri = imageUri
                     ) ?: Product(
                         name = name,
                         price = price.toInt(),
                         unit = unit,
                         amount = amount.toInt(),
                         categoryId = selectedCategoryId,
-                        order = 0 // 新規追加時はorderを0に設定
+                        order = 0, // 新規追加時はorderを0に設定
+                        imageUri = imageUri
                     )
                     onSave(newProduct)
                 }

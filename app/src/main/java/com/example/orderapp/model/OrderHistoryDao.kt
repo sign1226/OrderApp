@@ -18,6 +18,10 @@ interface OrderHistoryDao {
 
     @Query("DELETE FROM order_history WHERE id = :id")
     suspend fun deleteOrderHistoryById(id: Long)
+
+    @Transaction
+    @Query("SELECT * FROM order_history WHERE id = :id")
+    fun getOrderHistoryById(id: Long): Flow<OrderHistoryWithLines>
 }
 
 data class OrderHistoryWithLines(

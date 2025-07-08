@@ -15,5 +15,6 @@ data class Product(
     val unit: String = "",
     val amount: Int = 1, // 新しく追加するフィールド
     val categoryId: Long = 0L,
-    val order: Int = 0
+    val order: Int = 0,
+    val imageUri: String? = null
 )

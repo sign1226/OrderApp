@@ -2,16 +2,13 @@ package com.example.orderapp.model
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.decodeFromString
 import java.io.BufferedReader
 import java.io.InputStreamReader
-
-import kotlinx.serialization.SerializationException
-import android.util.Log
-
-import kotlinx.serialization.Serializable
 
 enum class ExportFormat {
     JSON, CSV
@@ -39,9 +36,9 @@ class DataTransferManager(private val context: Context) {
             ExportFormat.CSV -> {
                 val stringBuilder = StringBuilder()
                 stringBuilder.append("---PRODUCTS---\n")
-                stringBuilder.append("id,name,price,unit,amount,categoryId\n")
+                stringBuilder.append("id,name,price,unit,amount,categoryId,order,imageUri\n")
                 products.forEach { product ->
-                    stringBuilder.append("${product.id},\"${product.name}\",${product.price},\"${product.unit}\",${product.amount},${product.categoryId}\n")
+                    stringBuilder.append("${product.id},\"${product.name}\",${product.price},\"${product.unit}\",${product.amount},${product.categoryId},${product.order},\"${product.imageUri ?: ""}\"\n")
                 }
                 stringBuilder.append("---CATEGORIES---\n")
                 stringBuilder.append("id,name,order\n")
@@ -89,7 +86,7 @@ class DataTransferManager(private val context: Context) {
                                     currentSection = "CATEGORIES"
                                     return@forEach
                                 }
-                                "id,name,price,unit,amount,categoryId" -> {
+                                "id,name,price,unit,amount,categoryId,order,imageUri" -> {
                                     if (currentSection == "PRODUCTS") return@forEach // Skip product header
                                 }
                                 "id,name,order" -> {
@@ -98,7 +95,7 @@ class DataTransferManager(private val context: Context) {
                             }
 
                             val parts = line.split(",")
-                            if (currentSection == "PRODUCTS" && parts.size >= 6) {
+                            if (currentSection == "PRODUCTS" && parts.size >= 7) {
                                 try {
                                     products.add(
                                         Product(
@@ -107,7 +104,8 @@ class DataTransferManager(private val context: Context) {
                                             price = parts[2].toInt(),
                                             unit = parts[3].trim('"'),
                                             amount = parts[4].toInt(),
-                                            categoryId = parts[5].toLong()
+                                            categoryId = parts[5].toLong(),
+                                            order = parts[6].toInt()
                                         )
                                     )
                                 } catch (e: Exception) {

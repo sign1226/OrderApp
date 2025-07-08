@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,7 +24,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -88,8 +86,7 @@ fun SettingScreen(
         .verticalScroll(rememberScrollState())) { // スクロール可能にする
         Text("テーマ設定", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(16.dp))
-        Text("※テーマの変更はアプリの再起動後に反映されます。", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Spacer(modifier = Modifier.height(8.dp))
+        
 
         var expanded by remember { mutableStateOf(false) }
         ExposedDropdownMenuBox(
@@ -189,29 +186,7 @@ fun SettingScreen(
             Text("データインポート")
         }
         Spacer(modifier = Modifier.height(32.dp))
-        var showChangelogDialog by remember { mutableStateOf(false) }
-
-        Button(onClick = { showChangelogDialog = true }, modifier = Modifier.fillMaxWidth()) {
-            Text("更新履歴を表示")
-        }
-        Spacer(modifier = Modifier.height(32.dp))
-
-        if (showChangelogDialog) {
-            AlertDialog(
-                onDismissRequest = { showChangelogDialog = false },
-                title = { Text("更新履歴") },
-                text = {
-                    Column {
-                        ChangelogView()
-                    }
-                },
-                confirmButton = {
-                    TextButton(onClick = { showChangelogDialog = false }) {
-                        Text("閉じる")
-                    }
-                }
-            )
-        }
+        
         Text(text = "バージョン: ${context.packageManager.getPackageInfo(context.packageName, 0).versionName}", style = MaterialTheme.typography.bodySmall)
     }
 }

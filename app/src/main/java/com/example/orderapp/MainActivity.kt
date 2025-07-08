@@ -20,7 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -34,6 +33,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.orderapp.model.Order
 import com.example.orderapp.ui.CategoryManagementScreen
+import com.example.orderapp.ui.OrderDetailScreen
 import com.example.orderapp.ui.OrderHistoryScreen
 import com.example.orderapp.ui.OrderScreen
 import com.example.orderapp.ui.ProductEditScreen
@@ -64,15 +64,14 @@ class MainActivity : ComponentActivity() {
             val settingViewModel: SettingViewModel = viewModel(factory = SettingViewModelFactory(application))
             val currentThemeState = settingViewModel.theme.collectAsState()
 
-            key(currentThemeState.value) {
-                OrderAppTheme(appTheme = currentThemeState.value) {
+            OrderAppTheme(appTheme = currentThemeState.value) {
                 val navController = rememberNavController()
                 val screens = listOf(Screen.Order, Screen.Edit, Screen.CategoryManagement, Screen.History, Screen.Settings)
                 val productViewModel: ProductViewModel = viewModel(factory = ProductViewModelFactory(application))
                 val orderHistoryViewModel: OrderHistoryViewModel = viewModel(factory = OrderHistoryViewModelFactory(application))
                 val categoryViewModel: CategoryViewModel = viewModel(factory = CategoryViewModelFactory(application))
 
-                    Scaffold(
+                Scaffold(
                     bottomBar = {
                         NavigationBar {
                             val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -87,13 +86,14 @@ class MainActivity : ComponentActivity() {
                                                 Screen.CategoryManagement -> Icons.Filled.Category
                                                 Screen.History -> Icons.Filled.History
                                                 Screen.Settings -> Icons.Filled.Settings
+                                                else -> Icons.Filled.Settings // Fallback for other screens not in bottom nav
                                             },
                                             contentDescription = screen.title
                                         )
                                     },
                                     label = { Text(screen.title) },
                                     selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                                    onClick = { 
+                                    onClick = {
                                         navController.navigate(screen.route) {
                                             popUpTo(navController.graph.startDestinationId) {
                                                 saveState = true
@@ -110,13 +110,18 @@ class MainActivity : ComponentActivity() {
                     NavHost(navController = navController, startDestination = Screen.Order.route, modifier = Modifier.padding(innerPadding)) {
                         composable(Screen.Order.route) { OrderApp(productViewModel, orderHistoryViewModel) }
                         composable(Screen.Edit.route) { ProductEditScreen(productViewModel, categoryViewModel) }
-                        composable(Screen.History.route) { OrderHistoryScreen(orderHistoryViewModel) }
+                        composable(Screen.History.route) { OrderHistoryScreen(orderHistoryViewModel, navController) }
                         composable(Screen.CategoryManagement.route) { CategoryManagementScreen(categoryViewModel) }
-                        composable(Screen.Settings.route) { SettingScreen() }
+                        composable(Screen.Settings.route) { SettingScreen(viewModel = settingViewModel) }
+                        composable(Screen.OrderDetail.route) {
+                            val orderHistoryId = it.arguments?.getString("orderHistoryId")?.toLongOrNull()
+                            if (orderHistoryId != null) {
+                                OrderDetailScreen(orderHistoryId = orderHistoryId, viewModel = orderHistoryViewModel)
+                            }
+                        }
                     }
                 }
             }
-        }
         }
     }
 }

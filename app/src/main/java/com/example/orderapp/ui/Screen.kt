@@ -6,4 +6,7 @@ sealed class Screen(val route: String, val title: String) {
     object History : Screen("history", "発注履歴")
     object CategoryManagement : Screen("category_management", "カテゴリ管理")
     object Settings : Screen("settings", "設定")
+    object OrderDetail : Screen("orderDetail/{orderHistoryId}", "発注詳細") {
+        fun createRoute(orderHistoryId: Long) = "orderDetail/$orderHistoryId"
+    }
 }

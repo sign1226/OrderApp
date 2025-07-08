@@ -13,7 +13,7 @@ android {
         minSdk = 24
         targetSdk = 35
         versionCode = 1
-        versionName = "1.09"
+        versionName = "1.11"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -78,4 +78,5 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.reorderable.jvm)
     implementation(libs.gson)
+    implementation("io.coil-kt:coil-compose:2.5.0")
 }

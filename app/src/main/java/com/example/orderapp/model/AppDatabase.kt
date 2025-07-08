@@ -13,8 +13,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.jvm.Volatile
 import kotlin.text.trimIndent
+import androidx.core.content.edit
 
-@Database(entities = [Product::class, OrderHistory::class, OrderHistoryLine::class, Category::class], version = 7, exportSchema = false)
+@Database(entities = [Product::class, OrderHistory::class, OrderHistoryLine::class, Category::class], version = 8, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun productDao(): ProductDao
     abstract fun orderHistoryDao(): OrderHistoryDao
@@ -34,7 +35,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "order_app_database"
                 )
-                    .fallbackToDestructiveMigrationFrom(1, 2, 3, 4, 5, 6)
+                    .fallbackToDestructiveMigrationFrom(1, 2, 3, 4, 5, 6, 7)
                     .addCallback(object : Callback() {
                         override fun onCreate(db: SupportSQLiteDatabase) {
                             super.onCreate(db)
@@ -62,7 +63,7 @@ abstract class AppDatabase : RoomDatabase() {
                                         productDao.insertProduct(product)
                                     }
 
-                                    prefs.edit().putBoolean(KEY_INITIAL_DATA_INSERTED, true).apply()
+                                    prefs.edit { putBoolean(KEY_INITIAL_DATA_INSERTED, true) }
                                 }
                             }
                         }

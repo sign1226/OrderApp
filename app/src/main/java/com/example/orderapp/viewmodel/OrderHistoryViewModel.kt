@@ -21,6 +21,8 @@ class OrderHistoryViewModel(application: Application) : ViewModel() {
     fun deleteOrderHistory(orderHistory: OrderHistory) = viewModelScope.launch {
         repository.deleteOrderHistory(orderHistory.id)
     }
+
+    fun getOrderHistoryById(id: Long) = repository.getOrderHistoryById(id)
 }
 
 class OrderHistoryViewModelFactory(private val application: Application) : ViewModelProvider.Factory {

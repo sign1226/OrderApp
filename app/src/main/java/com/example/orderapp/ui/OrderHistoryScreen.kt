@@ -1,5 +1,6 @@
 package com.example.orderapp.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.orderapp.model.OrderHistoryWithLines
 import com.example.orderapp.viewmodel.OrderHistoryViewModel
 import java.text.SimpleDateFormat
@@ -35,7 +37,7 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun OrderHistoryScreen(viewModel: OrderHistoryViewModel) {
+fun OrderHistoryScreen(viewModel: OrderHistoryViewModel, navController: NavController) {
     val orderHistories by viewModel.orderHistories.collectAsState(initial = emptyList())
     var showDeleteConfirmDialog by remember { mutableStateOf(false) }
     var orderHistoryToDelete by remember { mutableStateOf<OrderHistoryWithLines?>(null) }
@@ -48,7 +50,8 @@ fun OrderHistoryScreen(viewModel: OrderHistoryViewModel) {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .clickable { navController.navigate(Screen.OrderDetail.createRoute(history.orderHistory.id)) },
                     elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                     shape = MaterialTheme.shapes.medium
                 ) {
