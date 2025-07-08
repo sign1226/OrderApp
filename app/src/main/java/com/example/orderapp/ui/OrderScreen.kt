@@ -16,6 +16,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -162,6 +164,16 @@ fun OrderScreen(order: Order, onContinueShopping: () -> Unit, onPlaceOrder: () -
                         }
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             var quantityText by remember(orderLine.quantity) { mutableStateOf(orderLine.quantity.toString()) }
+                            IconButton(onClick = {
+                                val currentQuantity = quantityText.toIntOrNull() ?: 0
+                                if (currentQuantity > 0) {
+                                    val newQuantity = currentQuantity - 1
+                                    val updatedOrder = order.updateProductQuantity(orderLine.product, newQuantity)
+                                    onOrderChange(updatedOrder)
+                                }
+                            }) {
+                                Icon(Icons.Default.Remove, contentDescription = "減らす")
+                            }
                             OutlinedTextField(
                                 value = quantityText,
                                 onValueChange = {
@@ -171,13 +183,13 @@ fun OrderScreen(order: Order, onContinueShopping: () -> Unit, onPlaceOrder: () -
                                 singleLine = true,
                                 modifier = Modifier.width(80.dp) // Reduced width
                             )
-                            Button(onClick = {
-                                val newQuantity = quantityText.toIntOrNull() ?: 0
+                            IconButton(onClick = {
+                                val currentQuantity = quantityText.toIntOrNull() ?: 0
+                                val newQuantity = currentQuantity + 1
                                 val updatedOrder = order.updateProductQuantity(orderLine.product, newQuantity)
                                 onOrderChange(updatedOrder)
-                            },
-                            modifier = Modifier.padding(start = 8.dp)) {
-                                Text("変更")
+                            }) {
+                                Icon(Icons.Default.Add, contentDescription = "増やす")
                             }
                         }
                         IconButton(onClick = {

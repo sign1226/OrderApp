@@ -9,6 +9,9 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import javax.inject.Inject
+import javax.inject.Singleton
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 enum class ExportFormat {
     JSON, CSV
@@ -20,7 +23,10 @@ data class AppData(
     val categories: List<Category>
 )
 
-class DataTransferManager(private val context: Context) {
+@Singleton
+class DataTransferManager @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
 
     private val json = Json { ignoreUnknownKeys = true }
 
@@ -95,7 +101,7 @@ class DataTransferManager(private val context: Context) {
                             }
 
                             val parts = line.split(",")
-                            if (currentSection == "PRODUCTS" && parts.size >= 7) {
+                            if (currentSection == "PRODUCTS" && parts.size >= 8) {
                                 try {
                                     products.add(
                                         Product(
@@ -105,7 +111,8 @@ class DataTransferManager(private val context: Context) {
                                             unit = parts[3].trim('"'),
                                             amount = parts[4].toInt(),
                                             categoryId = parts[5].toLong(),
-                                            order = parts[6].toInt()
+                                            order = parts[6].toInt(),
+                                            imageUri = parts[7].trim('"').let { if (it.isEmpty()) null else it }
                                         )
                                     )
                                 } catch (e: Exception) {

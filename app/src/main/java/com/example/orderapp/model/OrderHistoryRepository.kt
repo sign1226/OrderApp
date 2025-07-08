@@ -1,10 +1,12 @@
 package com.example.orderapp.model
 
-import android.content.Context
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class OrderHistoryRepository(context: Context) {
-    private val orderHistoryDao = AppDatabase.getDatabase(context).orderHistoryDao()
+class OrderHistoryRepository @Inject constructor(
+    private val orderHistoryDao: OrderHistoryDao
+) {
 
     fun getAllOrderHistories(): Flow<List<OrderHistoryWithLines>> {
         return orderHistoryDao.getAllOrderHistories()

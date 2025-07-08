@@ -1,8 +1,7 @@
 package com.example.orderapp
 
-
-import android.app.Application
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.padding
@@ -18,6 +17,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,7 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -42,34 +42,52 @@ import com.example.orderapp.ui.Screen
 import com.example.orderapp.ui.SettingScreen
 import com.example.orderapp.ui.theme.OrderAppTheme
 import com.example.orderapp.viewmodel.CategoryViewModel
-import com.example.orderapp.viewmodel.CategoryViewModelFactory
 import com.example.orderapp.viewmodel.OrderHistoryViewModel
-import com.example.orderapp.viewmodel.OrderHistoryViewModelFactory
 import com.example.orderapp.viewmodel.ProductViewModel
-import com.example.orderapp.viewmodel.ProductViewModelFactory
 import com.example.orderapp.viewmodel.SettingViewModel
-import com.example.orderapp.viewmodel.SettingViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 
 enum class AppTheme {
     SYSTEM_DEFAULT, LIGHT, DARK
 }
 
-
-
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val application = LocalContext.current.applicationContext as Application
-            val settingViewModel: SettingViewModel = viewModel(factory = SettingViewModelFactory(application))
+            val settingViewModel: SettingViewModel = hiltViewModel()
             val currentThemeState = settingViewModel.theme.collectAsState()
 
             OrderAppTheme(appTheme = currentThemeState.value) {
                 val navController = rememberNavController()
                 val screens = listOf(Screen.Order, Screen.Edit, Screen.CategoryManagement, Screen.History, Screen.Settings)
-                val productViewModel: ProductViewModel = viewModel(factory = ProductViewModelFactory(application))
-                val orderHistoryViewModel: OrderHistoryViewModel = viewModel(factory = OrderHistoryViewModelFactory(application))
-                val categoryViewModel: CategoryViewModel = viewModel(factory = CategoryViewModelFactory(application))
+                val productViewModel: ProductViewModel = hiltViewModel()
+                val orderHistoryViewModel: OrderHistoryViewModel = hiltViewModel()
+                val categoryViewModel: CategoryViewModel = hiltViewModel()
+
+                val context = LocalContext.current
+
+                LaunchedEffect(productViewModel.message) {
+                    productViewModel.message.collect { message ->
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    }
+                }
+                LaunchedEffect(categoryViewModel.message) {
+                    categoryViewModel.message.collect { message ->
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    }
+                }
+                LaunchedEffect(orderHistoryViewModel.message) {
+                    orderHistoryViewModel.message.collect { message ->
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    }
+                }
+                LaunchedEffect(settingViewModel.message) {
+                    settingViewModel.message.collect { message ->
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    }
+                }
 
                 Scaffold(
                     bottomBar = {

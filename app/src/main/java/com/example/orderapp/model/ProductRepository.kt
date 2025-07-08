@@ -1,10 +1,13 @@
 package com.example.orderapp.model
 
-import android.content.Context
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class ProductRepository(context: Context) {
-    private val productDao = AppDatabase.getDatabase(context).productDao()
+@Singleton
+class ProductRepository @Inject constructor(
+    private val productDao: ProductDao
+) {
 
     fun getAllProducts(): Flow<List<Product>> {
         return productDao.getAllProducts()

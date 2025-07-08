@@ -1,7 +1,6 @@
 package com.example.orderapp.ui
 
 import android.app.Activity
-import android.app.Application
 import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -34,18 +33,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.orderapp.AppTheme
 import com.example.orderapp.model.ExportFormat
 import com.example.orderapp.viewmodel.SettingViewModel
-import com.example.orderapp.viewmodel.SettingViewModelFactory
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingScreen(
-    viewModel: SettingViewModel = viewModel(factory = SettingViewModelFactory(LocalContext.current.applicationContext as Application))
+    viewModel: SettingViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -68,8 +68,6 @@ fun SettingScreen(
         }
     }
 
-// ...
-
     val importLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
             it.data?.data?.let { uri ->
@@ -86,7 +84,6 @@ fun SettingScreen(
         .verticalScroll(rememberScrollState())) { // スクロール可能にする
         Text("テーマ設定", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(16.dp))
-        
 
         var expanded by remember { mutableStateOf(false) }
         ExposedDropdownMenuBox(
@@ -132,6 +129,20 @@ fun SettingScreen(
                 }
             }
         }
+        Spacer(modifier = Modifier.height(32.dp))
+        Text("税率設定", style = MaterialTheme.typography.headlineMedium)
+        Spacer(modifier = Modifier.height(16.dp))
+        val taxRate by viewModel.taxRate.collectAsState()
+        OutlinedTextField(
+            value = taxRate.toString(),
+            onValueChange = { newValue ->
+                viewModel.setTaxRate(newValue.toIntOrNull() ?: 0)
+            },
+            label = { Text("税率 (%)") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
+        )
         Spacer(modifier = Modifier.height(32.dp))
         Text("データ管理", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(16.dp))
@@ -186,11 +197,7 @@ fun SettingScreen(
             Text("データインポート")
         }
         Spacer(modifier = Modifier.height(32.dp))
-        
+
         Text(text = "バージョン: ${context.packageManager.getPackageInfo(context.packageName, 0).versionName}", style = MaterialTheme.typography.bodySmall)
     }
 }
-
-
-
-

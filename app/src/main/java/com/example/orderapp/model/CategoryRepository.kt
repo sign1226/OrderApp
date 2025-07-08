@@ -1,8 +1,13 @@
 package com.example.orderapp.model
 
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class CategoryRepository(private val categoryDao: CategoryDao) {
+@Singleton
+class CategoryRepository @Inject constructor(
+    private val categoryDao: CategoryDao
+) {
     val allCategories: Flow<List<Category>> = categoryDao.getAllCategories()
 
     suspend fun insertCategory(category: Category) {
